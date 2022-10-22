@@ -6,6 +6,7 @@ const {
   loginUser,
   revalidateToken,
 } = require("../controllers/auth");
+const { validateJWT } = require("../middlewares/validate-jwt");
 
 const router = Router();
 
@@ -16,7 +17,7 @@ router.post(
     check("name", "Name is required").notEmpty(),
     check("email", "Email is required").isEmail(),
     check("password", "Password is invalid").isLength({ min: 6 }),
-    validateFields
+    validateFields,
   ],
   createUser
 );
@@ -27,12 +28,12 @@ router.post(
   [
     check("email", "Email is required").isEmail(),
     check("password", "Password is invalid").isLength({ min: 6 }),
-    validateFields
+    validateFields,
   ],
   loginUser
 );
 
 // Valitade token
-router.get("/renew", revalidateToken);
+router.get("/renew", validateJWT, revalidateToken);
 
 module.exports = router;
